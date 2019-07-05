@@ -117,7 +117,7 @@ class JWTEncoder implements C.IJWTEncoder {
         return this;
     }
 
-    public create(profileName: string, payload: C.IJWTPayload): string {
+    public createProfile(profileName: string, payload: C.IJWTPayload): string {
 
         const profile = this._profiles[profileName];
 

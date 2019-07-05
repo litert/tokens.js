@@ -177,7 +177,7 @@ export interface IJWTEncoder {
         pssmgf1Padding?: boolean
     ): this;
 
-    create(
+    createProfile(
         profile: string,
         payload: Partial<IJWTPayload>
     ): string;
