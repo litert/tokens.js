@@ -6,7 +6,7 @@ const jwts = Tokens.createJWTEncoder();
 
 jwts.registerHMACProfile("aaaaaa", "sha512", "hello world!");
 
-const test = jwts.createProfile("aaaaaa", {
+const test = jwts.create("aaaaaa", {
     "iss": "hello",
     "name": "laoxie"
 });

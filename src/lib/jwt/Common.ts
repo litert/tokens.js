@@ -33,12 +33,9 @@ export interface IRecurrsiveDict {
 export interface IJWTPayload extends IRecurrsiveDict {
 
     /**
-     * The "sub" (subject) claim identifies the principal that is the
-     * subject of the JWT.  The claims in a JWT are normally statements
-     * about the subject.  The subject value MUST either be scoped to be
-     * locally unique in the context of the issuer or be globally unique.
-     * The processing of this claim is generally application specific.  The
-     * "sub" value is a case-sensitive string containing a StringOrURI
+     * The "iss" (issuer) claim identifies the principal that issued the
+     * JWT.  The processing of this claim is generally application specific.
+     * The "iss" value is a case-sensitive string containing a StringOrURI
      * value.  Use of this claim is OPTIONAL.
      */
     "iss": string;
@@ -156,20 +153,47 @@ export interface IJWT<P extends IJWTPayload = IJWTPayload> {
 
 export interface IJWTEncoder {
 
+    /**
+     * Remove specific profile by name.
+     *
+     * @param name The name of profile to be removed.
+     */
     removeProfile(name: string): this;
 
+    /**
+     * Register a profile of HMAC algorithm.
+     *
+     * @param profileName   The name of new profile.
+     * @param algorithm     The name of hash algorithm to be used in new profile.
+     * @param key           The key of hash algorithm to be used in new profile.
+     */
     registerHMACProfile(
         profileName: string,
         algorithm: TValidHashAlgorithms,
         key: string | Buffer
     ): this;
 
+    /**
+     * Register a profile of ECDSA algorithm.
+     *
+     * @param profileName   The name of new profile.
+     * @param algorithm     The name of hash algorithm to be used in new profile.
+     * @param key           The key pair of hash algorithm to be used in new profile.
+     */
     registerECDSAProfile(
         profileName: string,
         algorithm: TValidHashAlgorithms,
         key: Signs.IKeyPair
     ): this;
 
+    /**
+     * Register a profile of RSA algorithm.
+     *
+     * @param profileName       The name of new profile.
+     * @param algorithm         The name of hash algorithm to be used in new profile.
+     * @param key               The key pair of hash algorithm to be used in new profile.
+     * @param pssmgf1Padding    Set to true to use PSS-MGF1 padding. [default: false]
+     */
     registerRSAProfile(
         profileName: string,
         algorithm: TValidHashAlgorithms,
@@ -177,11 +201,23 @@ export interface IJWTEncoder {
         pssmgf1Padding?: boolean
     ): this;
 
-    createProfile(
+    /**
+     * Create a JWT.
+     *
+     * @param profile   The name of profile to be used.
+     * @param payload   The payload of new JWT.
+     */
+    create(
         profile: string,
         payload: Partial<IJWTPayload>
     ): string;
 
+    /**
+     * Decode and verify a JWT.
+     *
+     * @param jwt       The JWT to be decoded and verified.
+     * @param profile   The name of profile to be used. If no specified, all profiles will be tried.
+     */
     verify(
         jwt: string,
         profile?: string
