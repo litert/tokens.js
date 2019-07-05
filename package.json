@@ -1,0 +1,43 @@
+{
+  "name": "@litert/tokens",
+  "version": "0.1.0",
+  "description": "A token serialization & unserialization library.",
+  "main": "./lib/index.js",
+  "scripts": {
+    "prepare": "npm run rebuild",
+    "build": "echo Using TypeScript && tsc -v && tsc -p .",
+    "build-watch": "echo Using TypeScript && tsc -v && tsc -w -p .",
+    "rebuild": "npm run clean && npm run lint && npm run build",
+    "test": "echo See directory src/samples",
+    "clean": "rm -rf lib samples",
+    "lint": "tslint -p . -c tslint.json"
+  },
+  "keywords": [
+    "litert",
+    "lrt",
+    "token",
+    "jwt"
+  ],
+  "author": "Angus.Fenying <fenying@litert.org> (https://fenying.net)",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/litert/tokens.js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/litert/tokens.js/issues"
+  },
+  "homepage": "https://github.com/litert/tokens.js#readme",
+  "types": "./lib/index.d.ts",
+  "typings": "./lib/index.d.ts",
+  "devDependencies": {
+    "@types/node": "^10.14.12",
+    "typescript": "^3.5.2"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "dependencies": {
+    "@litert/signatures": "^1.2.0"
+  }
+}
