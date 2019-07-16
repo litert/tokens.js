@@ -1,6 +1,6 @@
 {
   "name": "@litert/tokens",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "A token serialization & unserialization library.",
   "main": "./lib/index.js",
   "scripts": {
@@ -38,6 +38,7 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
-    "@litert/signatures": "^1.2.0"
+    "@litert/core": "^1.0.3",
+    "@litert/signatures": "^2.0.0"
   }
 }

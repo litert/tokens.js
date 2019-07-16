@@ -2,15 +2,32 @@
 
 import * as Tokens from "../lib";
 
+// Create a JWT encoder.
 const jwts = Tokens.createJWTEncoder();
 
-jwts.registerHMACProfile("aaaaaa", "sha512", "hello world!");
+// Register a profile with HMAC-SHA-512 algorithm.
+jwts.registerHMACProfile("test-hs512", "sha512", "hello world!");
 
-const test = jwts.create("aaaaaa", {
-    "iss": "hello",
-    "name": "laoxie"
+// Create a JWT with hs512 profile.
+const testJWT = jwts.create("test-hs512", {
+    "iss": "Heaven",
+    "name": "Hik"
 });
 
-console.log(test);
+// Print the JWT string.
+console.log(testJWT);
 
-console.log(JSON.stringify(jwts.verify(test, "aaaaaa"), null, 2));
+// Try to verify it, if verified successfully, check the testInfo.signature.
+const testInfo = jwts.verify(testJWT, "test-hs512");
+
+if (testInfo.signature.verified) {
+
+    console.info("Success!");
+}
+else {
+
+    console.error("Failed!");
+}
+
+// Print the JWT structure.
+console.log(JSON.stringify(testInfo, null, 2));

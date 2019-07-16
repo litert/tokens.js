@@ -26,7 +26,7 @@ interface IProfile {
 
     name: string;
 
-    signer: Signs.ISigner<any, "base64url">;
+    signer: Signs.ISigner<"base64url">;
 }
 
 class JWTEncoder implements C.IJWTEncoder {
@@ -48,11 +48,11 @@ class JWTEncoder implements C.IJWTEncoder {
 
             "jwa": (C.JWA as any)["HS" + algorithm.substr(3)],
             "name": profileName,
-            "signer": Signs.createHMACSigner({
-                hash: algorithm,
+            "signer": Signs.HMAC.createSigner(
+                algorithm,
                 key,
-                encoding: "base64url"
-            })
+                "base64url"
+            )
         };
 
         return this;
@@ -61,7 +61,7 @@ class JWTEncoder implements C.IJWTEncoder {
     public registerRSAProfile(
         profileName: string,
         algorithm: C.TValidHashAlgorithms,
-        key: Signs.IKeyPair,
+        key: C.IKeyPair,
         pssmgf1Padding?: boolean
     ): this {
 
@@ -74,12 +74,13 @@ class JWTEncoder implements C.IJWTEncoder {
 
             "jwa": (C.JWA as any)[pssmgf1Padding ? "PS" : "RS" + algorithm.substr(3)],
             "name": profileName,
-            "signer": Signs.createRSASigner({
-                hash: algorithm,
-                key,
-                encoding: "base64url",
-                padding: pssmgf1Padding ? "pss-mgf1" : "pkcs1-v1_5"
-            })
+            "signer": Signs.RSA.createSigner(
+                algorithm,
+                key.public,
+                key.private,
+                pssmgf1Padding ? Signs.ERSAPadding.PSS_MGF1 : Signs.ERSAPadding.PKCS1_V1_5,
+                "base64url"
+            )
         };
 
         return this;
@@ -88,7 +89,7 @@ class JWTEncoder implements C.IJWTEncoder {
     public registerECDSAProfile(
         profileName: string,
         algorithm: C.TValidHashAlgorithms,
-        key: Signs.IKeyPair
+        key: C.IKeyPair
     ): this {
 
         if (this._profiles[profileName]) {
@@ -100,11 +101,13 @@ class JWTEncoder implements C.IJWTEncoder {
 
             "name": profileName,
             "jwa": (C.JWA as any)["ES" + algorithm.substr(3)],
-            "signer": Signs.createECDSASigner({
-                hash: algorithm,
-                key,
-                encoding: "base64url"
-            })
+            "signer": Signs.ECDSA.createSigner(
+                algorithm,
+                key.public,
+                key.private,
+                Signs.EECDSAFormat.IEEE_P1363,
+                "base64url"
+            )
         };
 
         return this;
@@ -131,7 +134,7 @@ class JWTEncoder implements C.IJWTEncoder {
             "alg": C.JWA[profile.jwa]
         })) + "." + Enc.stringToBase64Url(JSON.stringify(payload));
 
-        return `${body}.${profile.signer.sign({ "message": body })}`;
+        return `${body}.${profile.signer.sign(body)}`;
     }
 
     private _tryVerify(algo: string, body: string, signature: string, profileName: string): boolean {
@@ -143,10 +146,10 @@ class JWTEncoder implements C.IJWTEncoder {
             throw new E.E_PROFILE_NOT_FOUND({ metadata: { profileName} });
         }
 
-        return C.JWA[profile.jwa] === algo && profile.signer.verify({
-            message: body,
+        return C.JWA[profile.jwa] === algo && profile.signer.verify(
+            body,
             signature
-        });
+        );
     }
 
     public verify(jwt: string, profileName?: string): C.IJWT {

@@ -122,6 +122,13 @@ export interface IJWTHeader {
     "type": "JWT";
 }
 
+export interface IKeyPair {
+
+    "public": Buffer | string;
+
+    "private": Buffer | string | Signs.IAsymmetricKey;
+}
+
 export interface IJWT<P extends IJWTPayload = IJWTPayload> {
 
     /**
@@ -183,7 +190,7 @@ export interface IJWTEncoder {
     registerECDSAProfile(
         profileName: string,
         algorithm: TValidHashAlgorithms,
-        key: Signs.IKeyPair
+        key: IKeyPair
     ): this;
 
     /**
@@ -197,7 +204,7 @@ export interface IJWTEncoder {
     registerRSAProfile(
         profileName: string,
         algorithm: TValidHashAlgorithms,
-        key: Signs.IKeyPair,
+        key: IKeyPair,
         pssmgf1Padding?: boolean
     ): this;
 
