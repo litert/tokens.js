@@ -1,5 +1,5 @@
 /**
- *  Copyright 2019 Angus.Fenying <fenying@litert.org>
+ *  Copyright 2020 Angus.Fenying <fenying@litert.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,17 +21,20 @@ export const ErrorHub = L.createErrorHub("@litert/tokens");
 export const E_DUP_PROFILE = ErrorHub.define(
     null,
     "E_DUP_PROFILE",
-    "The name of profile already exists."
+    "The name of profile already exists.",
+    {}
 );
 
 export const E_PROFILE_NOT_FOUND = ErrorHub.define(
     null,
     "E_PROFILE_NOT_FOUND",
-    "The name of profile doesn't exist."
+    "The name of profile doesn't exist.",
+    {}
 );
 
 export const E_MALFORMED_JWT = ErrorHub.define(
     null,
     "E_MALFORMED_JWT",
-    "The jwt to be decoded is malformed."
+    "The jwt to be decoded is malformed.",
+    {}
 );

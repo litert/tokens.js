@@ -1,5 +1,9 @@
 # Changes Logs
 
+## v0.2.1
+
+- Updated dependencies and fixed the error definitions.
+
 ## v0.2.0
 
 - Upgrade the dependencies.

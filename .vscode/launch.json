@@ -8,10 +8,10 @@
             "type": "node",
             "request": "launch",
             "name": "[LiteRT/Tokens.js] Debug",
-            "program": "${workspaceFolder}/src/samples/debug.ts",
+            "program": "${workspaceFolder}/src/examples/debug.ts",
             "sourceMaps": true,
             "outFiles": [
-                "${workspaceFolder}/samples/*.js",
+                "${workspaceFolder}/examples/*.js",
                 "${workspaceFolder}/lib/*.js"
             ]
         }
