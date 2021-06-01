@@ -1,5 +1,5 @@
 /**
- *  Copyright 2020 Angus.Fenying <fenying@litert.org>
+ *  Copyright 2021 Angus.Fenying <fenying@litert.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,33 +16,43 @@
 
 // tslint:disable: no-console
 
-import * as Tokens from "../lib";
+import * as Tokens from '../lib';
 
 // Create a JWT encoder.
 const jwts = Tokens.createJWTEncoder();
 
 // Register a profile with HMAC-SHA-512 algorithm.
-jwts.registerHMACProfile("test-hs512", "sha512", "hello world!");
+jwts.registerHMACProfile({
+    name: 'Test-HS256',
+    algorithm: 'sha256',
+    key: 'hello world',
+    predefinedPayload: {
+        aud: 'ffff'
+    },
+    predefinedHeaders: {
+        vid: 444
+    }
+});
 
-// Create a JWT with hs512 profile.
-const testJWT = jwts.create("test-hs512", {
-    "iss": "Heaven",
-    "name": "Hik"
+// Create a JWT with HS256 profile.
+const testJWT = jwts.create('Test-HS256', {
+    'iss': 'Heaven',
+    'name': 'Hik'
 });
 
 // Print the JWT string.
 console.log(testJWT);
 
 // Try to verify it, if verified successfully, check the testInfo.signature.
-const testInfo = jwts.verify(testJWT, "test-hs512");
+const testInfo = jwts.verify(testJWT, 'Test-HS256');
 
 if (testInfo.signature.verified) {
 
-    console.info("Success!");
+    console.info('Success!');
 }
 else {
 
-    console.error("Failed!");
+    console.error('Failed!');
 }
 
 // Print the JWT structure.

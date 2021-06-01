@@ -11,8 +11,7 @@
             "program": "${workspaceFolder}/src/examples/debug.ts",
             "sourceMaps": true,
             "outFiles": [
-                "${workspaceFolder}/examples/*.js",
-                "${workspaceFolder}/lib/*.js"
+                "${workspaceFolder}/**/*.js"
             ]
         }
     ]

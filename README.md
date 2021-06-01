@@ -11,8 +11,8 @@ A token serialization & unserialization library.
 
 ## Requirement
 
-- TypeScript v3.1.x (or newer)
-- Node.js v8.0.0 (or newer)
+- TypeScript v4.0.x (or newer)
+- Node.js v12.0.0 (or newer)
 
 ## Installation
 
@@ -29,7 +29,17 @@ import * as Tokens from "@litert/tokens";
 const jwts = Tokens.createJWTEncoder();
 
 // Register a profile with HMAC-SHA-512 algorithm.
-jwts.registerHMACProfile("test-hs512", "sha512", "hello world!");
+jwts.registerHMACProfile({
+    name: 'test-hs512',
+    algorithm: 'sha512',
+    key: 'hello world',
+    predefinedPayload: {
+        aud: 'https://litert.org'
+    },
+    predefinedHeaders: {
+        vid: 123456
+    }
+});
 
 // Create a JWT with hs512 profile.
 const testJWT = jwts.create("test-hs512", {

@@ -1,16 +1,17 @@
 {
   "name": "@litert/tokens",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "A token serialization & unserialization library.",
   "main": "./lib/index.js",
   "scripts": {
-    "prepare": "npm run rebuild",
+    "prepublishOnly": "npm run rebuild",
     "build": "echo Using TypeScript && tsc -v && tsc -p .",
     "build-watch": "echo Using TypeScript && tsc -v && tsc -w -p .",
     "rebuild": "npm run clean && npm run lint && npm run build",
     "test": "echo See directory src/examples",
     "clean": "rm -rf lib examples",
-    "lint": "tslint -p . -c tslint.json"
+    "typecheck": "tsc -p . --noEmit",
+    "lint": "eslint --ext ts src"
   },
   "keywords": [
     "litert",
@@ -31,14 +32,20 @@
   "types": "./lib/index.d.ts",
   "typings": "./lib/index.d.ts",
   "devDependencies": {
-    "@types/node": "^10.14.12",
-    "typescript": "^3.5.2"
+    "@commitlint/cli": "^12.1.4",
+    "@commitlint/config-conventional": "^12.1.4",
+    "@types/node": "^15.6.1",
+    "@typescript-eslint/eslint-plugin": "^4.26.0",
+    "@typescript-eslint/parser": "^4.26.0",
+    "eslint": "^7.27.0",
+    "husky": "^6.0.0",
+    "typescript": "^4.3.2"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=12.0.0"
   },
   "dependencies": {
-    "@litert/core": "^1.0.3",
-    "@litert/signatures": "^2.0.0"
+    "@litert/exception": "^1.1.1",
+    "@litert/signatures": "^2.1.0"
   }
 }

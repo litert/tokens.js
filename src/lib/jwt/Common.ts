@@ -1,5 +1,5 @@
 /**
- *  Copyright 2020 Angus.Fenying <fenying@litert.org>
+ *  Copyright 2021 Angus.Fenying <fenying@litert.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,20 +14,20 @@
  *  limitations under the License.
  */
 
-import * as Signs from "@litert/signatures";
+import * as Signs from '@litert/signatures';
 
-export enum JWA {
-    "HS256", "HS384", "HS512",
-    "RS256", "RS384", "RS512",
-    "ES256", "ES384", "ES512",
-    "PS256", "PS384", "PS512"
+export enum EJWA {
+    'HS256', 'HS384', 'HS512',
+    'RS256', 'RS384', 'RS512',
+    'ES256', 'ES384', 'ES512',
+    'PS256', 'PS384', 'PS512'
 }
 
-export type TValidHashAlgorithms = "sha256" | "sha384" | "sha512";
+export type TValidHashAlgorithms = 'sha256' | 'sha384' | 'sha512';
 
 export interface IRecurrsiveDict {
 
-    [k: string]: number | string | boolean | IRecurrsiveDict;
+    [k: string]: number | string | null | boolean | IRecurrsiveDict;
 }
 
 export interface IJWTPayload extends IRecurrsiveDict {
@@ -38,7 +38,7 @@ export interface IJWTPayload extends IRecurrsiveDict {
      * The "iss" value is a case-sensitive string containing a StringOrURI
      * value.  Use of this claim is OPTIONAL.
      */
-    "iss": string;
+    'iss': string;
 
     /**
      * The "sub" (subject) claim identifies the principal that is the
@@ -49,7 +49,7 @@ export interface IJWTPayload extends IRecurrsiveDict {
      * "sub" value is a case-sensitive string containing a StringOrURI
      * value.  Use of this claim is OPTIONAL.
      */
-    "sub": string;
+    'sub': string;
 
     /**
      * The "aud" (audience) claim identifies the recipients that the JWT is
@@ -64,7 +64,7 @@ export interface IJWTPayload extends IRecurrsiveDict {
      * interpretation of audience values is generally application specific.
      * Use of this claim is OPTIONAL.
      */
-    "aud": string;
+    'aud': string;
 
     /**
      * The "exp" (expiration time) claim identifies the expiration time on
@@ -75,7 +75,7 @@ export interface IJWTPayload extends IRecurrsiveDict {
      * a few minutes, to account for clock skew.  Its value MUST be a number
      * containing a NumericDate value.  Use of this claim is OPTIONAL.
      */
-    "exp": number;
+    'exp': number;
 
     /**
      * The "nbf" (not before) claim identifies the time before which the JWT
@@ -86,7 +86,7 @@ export interface IJWTPayload extends IRecurrsiveDict {
      * account for clock skew.  Its value MUST be a number containing a
      * NumericDate value.  Use of this claim is OPTIONAL.
      */
-    "nbf": number;
+    'nbf': number;
 
     /**
      * The "iat" (issued at) claim identifies the time at which the JWT was
@@ -94,7 +94,7 @@ export interface IJWTPayload extends IRecurrsiveDict {
      * value MUST be a number containing a NumericDate value.  Use of this
      * claim is OPTIONAL.
      */
-    "iat": number;
+    'iat': number;
 
     /**
      * The "jti" (JWT ID) claim provides a unique identifier for the JWT.
@@ -106,56 +106,112 @@ export interface IJWTPayload extends IRecurrsiveDict {
      * to prevent the JWT from being replayed.  The "jti" value is a case-
      * sensitive string.  Use of this claim is OPTIONAL.
      */
-    "jti": number;
+    'jti': number;
 }
 
 export interface IJWTHeader {
 
+    [key: string]: string | number;
+
     /**
      * The signature algorithm used in current JWT.
      */
-    "algorithm": JWA;
+    'alg': EJWA;
 
     /**
      * The type of current JWT.
      */
-    "type": "JWT";
+    'typ': 'JWT';
 }
 
 export interface IKeyPair {
 
-    "public": Buffer | string;
+    'public': Buffer | string;
 
-    "private": Buffer | string | Signs.IAsymmetricKey;
+    'private': Buffer | string | Signs.IAsymmetricKey;
 }
 
-export interface IJWT<P extends IJWTPayload = IJWTPayload> {
+export interface IJWT<T extends IJWTPayload = IJWTPayload> {
 
     /**
      * The header of current JWT.
      */
-    "header": IJWTHeader;
+    'header': IJWTHeader;
 
     /**
      * The payload of current JWT.
      */
-    "payload": P;
+    'payload': T;
 
     /**
      * The signature of current JWT.
      */
-    "signature": {
+    'signature': {
 
         /**
          * The value of signature.
          */
-        "value": string;
+        'value': string;
 
         /**
          * The verification result of signature.
          */
-        "verified": boolean;
+        'verified': boolean;
     };
+}
+
+export interface IProfileOptions {
+
+    /**
+     * The name of new profile.
+     */
+    name: string;
+
+    /**
+     * The predefined headers of JWT.
+     */
+    predefinedHeaders?: IRecurrsiveDict;
+
+    /**
+     * The predefined payload of JWT.
+     */
+    predefinedPayload?: Partial<IJWTPayload>;
+
+    /**
+     * The name of hash algorithm to be used in new profile.
+     */
+    algorithm: TValidHashAlgorithms;
+}
+
+export interface IHMACProfileOptions extends IProfileOptions {
+
+    /**
+     * The key of HMAC signature algorithm to be used in new profile.
+     */
+    key: string | Buffer;
+}
+
+export interface IECDSAProfileOptions extends IProfileOptions {
+
+    /**
+     * The key of ECDSA signature algorithm to be used in new profile.
+     */
+    key: IKeyPair;
+}
+
+export interface IRSAProfileOptions extends IProfileOptions {
+
+    /**
+     * The key of RSA signature algorithm to be used in new profile.
+     */
+    key: IKeyPair;
+
+    /**
+     * Set to true to use PSS-MGF1 padding. [default: false]
+     *
+     * > For JWA `PS256`, `PS384`, and `PS512`.
+     */
+    pssmgf1Padding?: boolean;
 }
 
 export interface IJWTEncoder {
@@ -169,16 +225,8 @@ export interface IJWTEncoder {
 
     /**
      * Register a profile of HMAC algorithm.
-     *
-     * @param profileName   The name of new profile.
-     * @param algorithm     The name of hash algorithm to be used in new profile.
-     * @param key           The key of hash algorithm to be used in new profile.
      */
-    registerHMACProfile(
-        profileName: string,
-        algorithm: TValidHashAlgorithms,
-        key: string | Buffer
-    ): this;
+    registerHMACProfile(opts: IHMACProfileOptions): this;
 
     /**
      * Register a profile of ECDSA algorithm.
@@ -186,12 +234,9 @@ export interface IJWTEncoder {
      * @param profileName   The name of new profile.
      * @param algorithm     The name of hash algorithm to be used in new profile.
      * @param key           The key pair of hash algorithm to be used in new profile.
+     * @param predefinedHeaders The predefined headers of JWT
      */
-    registerECDSAProfile(
-        profileName: string,
-        algorithm: TValidHashAlgorithms,
-        key: IKeyPair
-    ): this;
+    registerECDSAProfile(opts: IECDSAProfileOptions): this;
 
     /**
      * Register a profile of RSA algorithm.
@@ -200,13 +245,9 @@ export interface IJWTEncoder {
      * @param algorithm         The name of hash algorithm to be used in new profile.
      * @param key               The key pair of hash algorithm to be used in new profile.
      * @param pssmgf1Padding    Set to true to use PSS-MGF1 padding. [default: false]
+     * @param predefinedHeaders The predefined headers of JWT
      */
-    registerRSAProfile(
-        profileName: string,
-        algorithm: TValidHashAlgorithms,
-        key: IKeyPair,
-        pssmgf1Padding?: boolean
-    ): this;
+    registerRSAProfile(opts: IRSAProfileOptions): this;
 
     /**
      * Create a JWT.
@@ -216,7 +257,8 @@ export interface IJWTEncoder {
      */
     create(
         profile: string,
-        payload: Partial<IJWTPayload>
+        payload: Partial<IJWTPayload>,
+        headers?: IRecurrsiveDict
     ): string;
 
     /**

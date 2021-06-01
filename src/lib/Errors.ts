@@ -1,5 +1,5 @@
 /**
- *  Copyright 2020 Angus.Fenying <fenying@litert.org>
+ *  Copyright 2021 Angus.Fenying <fenying@litert.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,27 +14,34 @@
  *  limitations under the License.
  */
 
-import * as L from "@litert/core";
+import * as $Exceptions from '@litert/exception';
 
-export const ErrorHub = L.createErrorHub("@litert/tokens");
+export const exceptionRegistry = $Exceptions.createExceptionRegistry({
+    module: 'tokens.litert.org',
+    types: {
+        'public': {
+            index: $Exceptions.createIncreaseCodeIndex(0)
+        }
+    }
+});
 
-export const E_DUP_PROFILE = ErrorHub.define(
-    null,
-    "E_DUP_PROFILE",
-    "The name of profile already exists.",
-    {}
-);
+export const E_DUP_PROFILE = exceptionRegistry.register({
+    name: 'dup_profile',
+    message: 'The name of profile already exists.',
+    type: 'public',
+    metadata: {}
+});
 
-export const E_PROFILE_NOT_FOUND = ErrorHub.define(
-    null,
-    "E_PROFILE_NOT_FOUND",
-    "The name of profile doesn't exist.",
-    {}
-);
+export const E_PROFILE_NOT_FOUND = exceptionRegistry.register({
+    name: 'profile_not_found',
+    message: 'The name of profile doesn\'t exist.',
+    type: 'public',
+    metadata: {}
+});
 
-export const E_MALFORMED_JWT = ErrorHub.define(
-    null,
-    "E_MALFORMED_JWT",
-    "The jwt to be decoded is malformed.",
-    {}
-);
+export const E_MALFORMED_JWT = exceptionRegistry.register({
+    name: 'malformed_jwt',
+    message: 'The jwt to be decoded is malformed.',
+    type: 'public',
+    metadata: {}
+});
